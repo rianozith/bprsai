@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="text/html; charset=utf-8" >
+	<title>Surat Persetujuan Pembiayaan</title>
+	<link rel="stylesheet" href="">
+	<style type="text/css">
+		.page-break {
+            page-break-after: always;
+        }
+		.tab {
+			padding-left:15em
+		}
+		
+    table {
+        border-collapse: collapse;
+    }
+
+    table, td, th {
+        border: 1px solid black;
+    }
+    </style>
+</head>
+<body style="height:794px; width:1122px">
+<div align="center" style="font-size:18px; line-height:1">
+  <strong>
+  <p>BPR Syariah Amanah Insani</p>
+  <p style="position:relative; top:-15px">REPAYMENT SCHEDULE</p></strong>
+</div>
+
+<table border="0" style="margin-left:0px">
+  <tr>
+    <td width="103">No. rekening </td>
+    <td width="10">:</td>
+    <td width="180">{{$datas->kdnas}}</td>
+    <td width="113">&nbsp;</td>
+    <td width="63">No. PP </td>
+    <td width="10">:</td>
+    <td width="381">{{$datas->nopp}}</td>
+  </tr>
+  <tr>
+    <td>Nama Nasabah </td>
+    <td>:</td>
+    <td>{{$datas->nama}}</td>
+    <td>&nbsp;</td>
+    <td>No. SPH </td>
+    <td>:</td>
+    <td>{{$datas->nosph}}</td>
+  </tr>
+  <tr>
+    <td>Pokok</td>
+    <td>:</td>
+    <td><div align="right">{{$datas->pengajuanbiaya}}</div></td>
+    <td>&nbsp;</td>
+    <td>Tgl. Realisasi </td>
+    <td>:</td>
+    <td>{{date('d-m-Y', strtotime($datas -> tglrealisasi))}}</td>
+  </tr>
+  <tr>
+    <td>Margin</td>
+    <td>:</td>
+    <td><div align="right">{{$datas->marginbank}}</div></td>
+    <td>&nbsp;</td>
+    <td>Tgl. Jatuh Tempo </td>
+    <td>:</td>
+    <td>{{date('d-m-Y', strtotime($datas -> tglakhir))}}</td>
+  </tr>
+  <tr>
+    <td>Jumlah Hutang </td>
+    <td>:</td>
+    <td><div align="right">{{$datas->totalkewajiban}}</div></td>
+    <td>&nbsp;</td>
+    <td>Periode</td>
+    <td>:</td>
+    <td>{{$datas->jangkawaktu}} Bulan</td>
+  </tr>
+</table>
+<div style="position:absolute; left: 875px; top: 187px; height: 38px; width: 251px; border:medium">Biaya Penagihan : {{$datas->biayatagih}}</div>
+<br><br>
+<table >
+  <tr>
+    <th width="11%">Ke</th>
+    <th width="11%"><strong>Tanggal</strong></th>
+    <th width="11%">Angsuran</th>
+    <th width="11%">Margin</th>
+    <th width="11%">Pokok</th>
+    <th width="11%">Sisa Pokok </th>
+    <th width="11%"> Sisa Margin </th>
+    <th width="11%">Sisa Angsuran</th>
+    <th width="11%">Keterangan</th>
+  </tr>
+  <tr>
+    <th><div align="right">0</div></th>
+    <th>{{$tglrealisasi->format('d-m-Y')}}</th>
+    <th><div align="right">0</div></th>
+    <th><div align="right">0</div></th>
+    <th><div align="right">0</div></th>
+    <th><div align="right">{{$datas->pengajuanbiaya}}</div></th>
+    <th><div align="right">{{$datas->marginbank}}</div></th>
+    <th><div align="right">{{$datas->totalkewajiban}}</div></th>
+    <th>&nbsp;</th>
+  </tr>
+  <?php 
+    $angsuran = $datas->angsuranpokokinteger + $datas->angsuranmargininteger;
+    $sisapokok = $datas->pengajuanbiayainteger;
+    $sisamargin = $datas->marginbankinteger;
+    $sisaangsuran = $datas->totalkewajibaninteger;
+  ?>
+  @for ($i = 1; $i < $datas->jangkawaktu; $i++)
+  <?php 
+  
+    $sisapokok = $sisapokok - $datas->angsuranpokokinteger;
+    $sisamargin = $sisamargin - $datas->angsuranmargininteger;
+    $sisaangsuran = $sisaangsuran - $angsuran;
+  ?>
+  <tr>
+    <th><div align="right">{{$i}}</div></th>
+    <th>{{date('d-m-Y', strtotime($tglrealisasi->addmonth(1)))}}</th>
+    <th><div align="right">{{$angsuran}}</div></th>
+    <th><div align="right">{{$datas->angsuranmargininteger}}</div></th>
+    <th><div align="right">{{$datas->angsuranpokokinteger}}</div></th>
+    <th><div align="right">{{$sisapokok}}</div></th>
+    <th><div align="right">{{$sisamargin}}</div></th>
+    <th><div align="right">{{$sisaangsuran}}</div></th>
+    <th>&nbsp;</th>
+  </tr>
+  
+  @endfor
+  <?php 
+    $pokokjt= $datas->pengajuanbiayainteger - ( $datas->angsuranpokokinteger * ($datas->jangkawaktu - 1) );
+    $marginjt= $datas->marginbankinteger - ( $datas->angsuranmargininteger * ($datas->jangkawaktu - 1) );
+  ?>
+  <tr>
+    <th><div align="right">{{$datas->jangkawaktu}}</div></th>
+    <th>{{date('d-m-Y', strtotime($datas -> tglakhir))}}</th>
+    <th><div align="right">{{$marginjt + $pokokjt}}</div></th>
+    <th><div align="right">{{$marginjt}}</div></th>
+    <th><div align="right">{{$pokokjt}}</div></th>
+    <th><div align="right">0</div></th>
+    <th><div align="right">0</div></th>
+    <th><div align="right">0</div></th>
+    <th>&nbsp;</th>
+  </tr>
+  
+</table>
+
+
+
+
+</body>
+</html>
