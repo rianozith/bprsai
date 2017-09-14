@@ -49,12 +49,16 @@
             </div>
 			
 			<input type="image" src="{{asset('vendors/bluelogin/images/login-btn.png')}}">
+			<span class="pull-right">
+				<p>username admin</p> <p>password adminadmin</p>
+			</span>
 			
 			
 
 
 			{!! Form::close()!!}
-		</div>
+
+		</div> 
 
 	</div>
 
